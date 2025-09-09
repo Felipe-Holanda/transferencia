@@ -52,14 +52,65 @@ public class UserServiceImpl implements UserService {
         } while (userRepository.findByAccountNumber(accountNumber).isPresent());
         newUser.setAccountNumber(accountNumber);
 
-        User createdUser = userRepository.save(newUser);
-        createdUser.setPasswordHash(null);
-        return createdUser;
+        return userRepository.save(newUser);
+    }
+
+    public User findByEmail(String email) {
+        User foundUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        if (!foundUser.getIsActive()) {
+            throw new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        return foundUser;
+    }
+
+    public User findByAccountNumber(String accountNumber) {
+        User foundUser = userRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        if (!foundUser.getIsActive()) {
+            throw new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        return foundUser;
+    }
+
+    public User updateUser(Long id, RegisterRequest request) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+
+        if(!existingUser.getIsActive()){
+            throw new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        if (request.getFullName() != null) {
+            existingUser.setFullName(request.getFullName());
+        }
+        if (request.getPhone() != null) {
+            existingUser.setPhone(request.getPhone());
+        }
+        if (request.getPassword() != null) {
+            existingUser.setPasswordHash(HashUtil.hashPassword(request.getPassword()));
+        }
+
+        return userRepository.save(existingUser);
+    }
+
+    public void softDeleteUser(Long id) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        existingUser.setIsActive(false);
+        userRepository.save(existingUser);
     }
 
     @Override
     public User loadUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        User foundUser = userRepository.findById(id)
+                .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        if (!foundUser.getIsActive()) {
+            throw new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND);
+        }
+        return foundUser;
     }
 
     @Override

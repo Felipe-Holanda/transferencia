@@ -9,4 +9,12 @@ public interface UserService extends UserDetailsService {
     User createUser(RegisterRequest request);
 
     User loadUserById(Long id);
+
+    User findByEmail(String email);
+
+    User findByAccountNumber(String accountNumber);
+
+    User updateUser(Long id, RegisterRequest request);
+
+    void softDeleteUser(Long id);
 }
