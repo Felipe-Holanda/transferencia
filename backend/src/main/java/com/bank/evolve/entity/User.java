@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.bank.evolve.enums.Roles;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
 @Setter
@@ -31,6 +32,7 @@ public class User {
     private String cpf;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String passwordHash;
 
     @Column(nullable = false, unique = true)
