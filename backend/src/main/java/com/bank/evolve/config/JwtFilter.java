@@ -81,7 +81,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         return (path.equals("/user") && method.equals(HttpMethod.POST.name()))
                 || path.startsWith("/auth/")
-                || path.startsWith("/h2-console/");
+                || path.startsWith("/h2-console/")
+                || path.startsWith("/auth");
     }
 
     private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {

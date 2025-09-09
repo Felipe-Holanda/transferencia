@@ -39,7 +39,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Método de validação antigo - mantido para referência, mas não usado pelo filtro
     public boolean validateToken(String token) {
         try {
             return !isTokenExpired(token);
@@ -48,8 +47,6 @@ public class JwtUtil {
         }
     }
 
-    // --- NOVO MÉTODO DE VALIDAÇÃO ---
-    // Este método é mais seguro pois valida o token contra os detalhes do usuário do banco.
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
