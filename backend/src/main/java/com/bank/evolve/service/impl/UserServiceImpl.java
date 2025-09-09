@@ -1,5 +1,6 @@
 package com.bank.evolve.service.impl;
 
+import com.bank.evolve.dto.AdminUpdateRequest;
 import com.bank.evolve.dto.RegisterRequest;
 import com.bank.evolve.dto.UpdateRequest;
 import com.bank.evolve.entity.User;
@@ -145,5 +146,52 @@ public class UserServiceImpl implements UserService {
                 user.getPasswordHash(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()))
         );
+    }
+
+    public User adminFindById(Long id) {
+        User foundUser = userRepository.findById(id)
+                .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        return foundUser;
+    }
+
+    public User adminUpdate(Long id, AdminUpdateRequest request) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+
+        if(request.getEmail() != null && !request.getEmail().equals(existingUser.getEmail())){
+            if(userRepository.findByEmail(request.getEmail()).isPresent()){
+                throw new AppError("Este e-mail já está cadastrado", HttpStatus.CONFLICT);
+            }
+            existingUser.setEmail(request.getEmail());
+        }
+
+        if (request.getPhone() != null) {
+            existingUser.setPhone(request.getPhone());
+        }
+
+        if (request.getPassword() != null) {
+            existingUser.setPasswordHash(HashUtil.hashPassword(request.getPassword()));
+        }
+
+        if (request.getRole() != null) {
+            existingUser.setRole(request.getRole());
+        }
+
+        return userRepository.save(existingUser);
+    }
+
+    public User blockUnblockUser(Long id) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+
+        existingUser.setIsActive(!existingUser.getIsActive());
+
+        return userRepository.save(existingUser);
+    }
+
+    public void hardDeleteUser(Long id) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        userRepository.delete(existingUser);
     }
 }
