@@ -1,5 +1,6 @@
 package com.bank.evolve.service;
 
+import com.bank.evolve.dto.AdminUpdateRequest;
 import com.bank.evolve.dto.RegisterRequest;
 import com.bank.evolve.dto.UpdateRequest;
 import com.bank.evolve.entity.User;
@@ -20,4 +21,12 @@ public interface UserService extends UserDetailsService {
     void softDeleteUser(Long id);
 
     String authenticate(String email, String password);
+
+    User adminFindById(Long id);
+
+    User adminUpdate(Long id, AdminUpdateRequest request);
+
+    User blockUnblockUser(Long id);
+
+    void hardDeleteUser(Long id);
 }

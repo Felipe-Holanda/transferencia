@@ -1,35 +1,29 @@
 spring.application.name=evolve
 
 # ===============================
-# Configuração do Banco (H2 em memória)
+# Configuração do Banco (SQLite)
 # ===============================
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.datasource.url=jdbc:sqlite:evolve.db
+spring.datasource.driverClassName=org.sqlite.JDBC
 spring.jpa.hibernate.ddl-auto=update
-
-# Ativar console H2 para debug
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
+spring.jpa.database-platform=com.github.gwenn.sqlite.SQLiteDialect
 
 # ===============================
 # Configuração de Logging
 # ===============================
-logging.level.org.springframework.security=DEBUG
+logging.level.org.springframework.security=INFO
 logging.level.org.hibernate.SQL=DEBUG
 
 # ===============================
 # Configuração JWT
 # ===============================
-app.jwt.secret=
-app.jwt.expiration-ms=3600000   # 1 hora (em milissegundos)
+app.jwt.secret=YmVzdC1rZXB0LXNlY3JldC1mb3Itand0LXRlc3RpbmctcHVycG9zZXM=
+app.jwt.expiration-ms=3600000
 
 # ===============================
 # Configuração OTP (recuperação de senha)
 # ===============================
-app.otp.expiration-ms=300000    # 5 minutos (em milissegundos)
+app.otp.expiration-ms=300000
 
 # ===============================
 # Configuração de Locale/Timezone (opcional)
