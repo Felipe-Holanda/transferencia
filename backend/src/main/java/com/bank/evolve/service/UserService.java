@@ -1,6 +1,7 @@
 package com.bank.evolve.service;
 
 import com.bank.evolve.dto.RegisterRequest;
+import com.bank.evolve.dto.UpdateRequest;
 import com.bank.evolve.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -14,7 +15,9 @@ public interface UserService extends UserDetailsService {
 
     User findByAccountNumber(String accountNumber);
 
-    User updateUser(Long id, RegisterRequest request);
+    User updateUser(Long id, UpdateRequest request);
 
     void softDeleteUser(Long id);
+
+    String authenticate(String email, String password);
 }

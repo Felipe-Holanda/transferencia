@@ -24,6 +24,7 @@ public class RegisterRequest {
     @NotBlank(message = "Você deve informar o seu telefone")
     private String phone;
 
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%&*]).{8,}$", message = "Sua senha deve ter no mínimo 8 caracteres, incluindo pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@, #, $, %, &, *)")
     @NotBlank(message = "Você deve informar uma senha")
     private String password;
 }
