@@ -1,12 +1,14 @@
 package com.bank.evolve.service.impl;
 
 import com.bank.evolve.dto.RegisterRequest;
+import com.bank.evolve.dto.UpdateRequest;
 import com.bank.evolve.entity.User;
 import com.bank.evolve.repository.UserRepository;
 import com.bank.evolve.helper.CpfHelper;
 import com.bank.evolve.service.UserService;
 import com.bank.evolve.util.HashUtil;
 import com.bank.evolve.util.AppError;
+import com.bank.evolve.config.JwtUtil;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,9 +24,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final Random random = new Random();
+    private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -75,7 +79,7 @@ public class UserServiceImpl implements UserService {
         return foundUser;
     }
 
-    public User updateUser(Long id, RegisterRequest request) {
+    public User updateUser(Long id, UpdateRequest request) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
@@ -83,12 +87,17 @@ public class UserServiceImpl implements UserService {
             throw new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND);
         }
 
-        if (request.getFullName() != null) {
-            existingUser.setFullName(request.getFullName());
+        if(request.getEmail() != null && !request.getEmail().equals(existingUser.getEmail())){
+            if(userRepository.findByEmail(request.getEmail()).isPresent()){
+                throw new AppError("Este e-mail já está cadastrado", HttpStatus.CONFLICT);
+            }
+            existingUser.setEmail(request.getEmail());
         }
+
         if (request.getPhone() != null) {
             existingUser.setPhone(request.getPhone());
         }
+
         if (request.getPassword() != null) {
             existingUser.setPasswordHash(HashUtil.hashPassword(request.getPassword()));
         }
@@ -101,6 +110,19 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
         existingUser.setIsActive(false);
         userRepository.save(existingUser);
+    }
+
+    public String authenticate(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppError("Credenciais inválidas", HttpStatus.UNAUTHORIZED));
+
+        if (!user.getIsActive() || !HashUtil.checkPassword(password, user.getPasswordHash())) {
+            throw new AppError("Credenciais inválidas", HttpStatus.UNAUTHORIZED);
+        }
+
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return token;
     }
 
     @Override
