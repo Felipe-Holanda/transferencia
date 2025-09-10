@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransferTaxesServiceImpl implements TransferTaxesService {
@@ -30,6 +31,13 @@ public class TransferTaxesServiceImpl implements TransferTaxesService {
 
     public TransferTaxes createNew(TransferTaxesRequest transferTaxes){
         TransferTaxes newTransferTaxes = new TransferTaxes();
+
+        List<TransferTaxes> taxes = transferTaxesRepository.findAll();
+
+        if(taxes.stream().anyMatch(tax -> tax.getAmountDays() == transferTaxes.getAmountDays())){
+            throw new AppError("Já existe uma taxa cadastrada para essa quantidade de dias", HttpStatus.CONFLICT);
+        }
+
         newTransferTaxes.setAmountDays(transferTaxes.getAmountDays());
         newTransferTaxes.setFixedTax(transferTaxes.getFixedTax());
         newTransferTaxes.setTaxPercentage(transferTaxes.getTaxPercentage());

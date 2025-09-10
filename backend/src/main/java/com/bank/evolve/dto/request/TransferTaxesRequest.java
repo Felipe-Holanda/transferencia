@@ -3,19 +3,19 @@ package com.bank.evolve.dto.request;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 public class TransferTaxesRequest {
 
-    @NotBlank(message = "Para cadastrar uma taxa, você deve informar o número de dias.")
+    @NotNull(message = "Para cadastrar uma taxa, você deve informar o número de dias.")
     private int amountDays;
 
-    @NotBlank(message = "Para cadastrar uma taxa, você deve informar o valor de taxa fixo.")
+    @NotNull(message = "Para cadastrar uma taxa, você deve informar o valor de taxa fixo.")
     private double fixedTax;
 
-    @NotBlank(message = "Para cadastrar uma taxa, você deve informar o percentual de taxa.")
+    @NotNull(message = "Para cadastrar uma taxa, você deve informar o percentual de taxa.")
     private double taxPercentage;
 
 }

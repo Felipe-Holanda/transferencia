@@ -47,25 +47,25 @@ public class AdminController {
         return new ResponseEntity<>(foundUser, HttpStatus.OK);
     }
 
-    @PatchMapping("/users/id/{id}")
+    @PatchMapping("/user/id/{id}")
     public ResponseEntity<Object> editUser(@PathVariable Long id, @RequestBody @Valid AdminUpdateRequest request) {
         User updatedUser = userService.adminUpdate(id, request);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
-    @PutMapping("/users/id/{id}")
+    @PutMapping("/user/id/{id}")
     public ResponseEntity<Object> blockUnblockUser(@PathVariable Long id) {
         User user = userService.blockUnblockUser(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @DeleteMapping("/users/id/{id}")
+    @DeleteMapping("/user/id/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
         userService.softDeleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/users/id/{id}/hard")
+    @DeleteMapping("/user/id/{id}/hard")
     public ResponseEntity<Object> hardDeleteUser(@PathVariable Long id) {
         userService.hardDeleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -76,8 +76,8 @@ public class AdminController {
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     @PostMapping("/taxes")
-    public ResponseEntity<Object> setTransferTaxes(@RequestParam @Valid TransferTaxesRequest taxPercentage) {
-        TransferTaxes newTax = transferTaxesService.createNew(taxPercentage);
+    public ResponseEntity<Object> setTransferTaxes(@RequestBody @Valid TransferTaxesRequest request) {
+        TransferTaxes newTax = transferTaxesService.createNew(request);
         return new ResponseEntity<>(newTax, HttpStatus.CREATED);
     }
 
@@ -88,7 +88,7 @@ public class AdminController {
     }
 
     @PatchMapping("/taxes/id/{id}")
-    public ResponseEntity<Object> updateTransferTaxes(@PathVariable Long id, @RequestParam @Valid TransferTaxesUpdateRequest request) {
+    public ResponseEntity<Object> updateTransferTaxes(@PathVariable Long id, @RequestBody @Valid TransferTaxesUpdateRequest request) {
         TransferTaxes updatedTax = transferTaxesService.update(id, request);
         return new ResponseEntity<>(updatedTax, HttpStatus.OK);
     }

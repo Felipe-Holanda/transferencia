@@ -168,6 +168,10 @@ public class UserServiceImpl implements UserService {
             existingUser.setEmail(request.getEmail());
         }
 
+        if(request.getFullName() != null) {
+            existingUser.setFullName(request.getFullName());
+        }
+
         if (request.getPhone() != null) {
             existingUser.setPhone(request.getPhone());
         }

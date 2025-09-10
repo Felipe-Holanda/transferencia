@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 @Setter
 public class AdminUpdateRequest {
 
-    private String name;
+    private String fullName;
 
     @Email(message = "O email informado é inválido")
     private String email;
