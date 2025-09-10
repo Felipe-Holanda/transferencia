@@ -1,10 +1,12 @@
 package com.bank.evolve.controller;
 
 import com.bank.evolve.entity.User;
+import com.bank.evolve.dto.request.CalculateTaxesRequest;
 import com.bank.evolve.dto.request.DepositRequest;
 import com.bank.evolve.dto.request.TransactionRequest;
 import com.bank.evolve.entity.Transaction;
 import com.bank.evolve.service.TransactionService;
+import com.bank.evolve.service.TransferTaxesService;
 import com.bank.evolve.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,19 @@ public class TransactionController {
 
     TransactionService transactionService;
     UserService userService;
+    TransferTaxesService transferTaxesService;
 
-    public TransactionController(TransactionService transactionService, UserService userService) {
+    public TransactionController(TransactionService transactionService, UserService userService, TransferTaxesService transferTaxesService) {
         this.transactionService = transactionService;
         this.userService = userService;
+        this.transferTaxesService = transferTaxesService;
+    }
+
+    @GetMapping("/calculate")
+    public ResponseEntity<Object> calculateTaxes(@RequestBody @Valid CalculateTaxesRequest calculateTaxesRequest){
+        Long days = (calculateTaxesRequest.getTargetDate().getTime() - System.currentTimeMillis()) / (1000 * 60 * 60 * 24);
+        Double calculatedTax = transferTaxesService.calculateTax(calculateTaxesRequest.getAmount(), days);
+        return new ResponseEntity<>(calculatedTax, HttpStatus.OK);
     }
 
     @PostMapping
