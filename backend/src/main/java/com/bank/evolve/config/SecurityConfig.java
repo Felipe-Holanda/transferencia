@@ -46,6 +46,7 @@ public class SecurityConfig {
             .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/user").permitAll()
                 .antMatchers("/auth/**", "/h2-console/**").permitAll()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
             .and()
                 .sessionManagement()
