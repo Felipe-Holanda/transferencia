@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
-import com.bank.evolve.dto.AuthRequest;
+import com.bank.evolve.dto.Request.AuthRequest;
 import com.bank.evolve.service.UserService;
 
 @RestController

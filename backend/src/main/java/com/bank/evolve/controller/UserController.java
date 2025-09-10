@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 
 import com.bank.evolve.service.UserService;
-import com.bank.evolve.dto.RegisterRequest;
-import com.bank.evolve.dto.UpdateRequest;
+import com.bank.evolve.dto.Request.RegisterRequest;
+import com.bank.evolve.dto.Request.UpdateRequest;
 import com.bank.evolve.entity.User;
 
 import org.springframework.lang.NonNull;

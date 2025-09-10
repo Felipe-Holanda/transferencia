@@ -1,7 +1,7 @@
 package com.bank.evolve.service;
 
-import com.bank.evolve.dto.TransferTaxesRequest;
-import com.bank.evolve.dto.TransferTaxesUpdateRequest;
+import com.bank.evolve.dto.Request.TransferTaxesRequest;
+import com.bank.evolve.dto.Request.TransferTaxesUpdateRequest;
 import com.bank.evolve.entity.TransferTaxes;
 
 import java.util.List;
@@ -14,6 +14,6 @@ public interface TransferTaxesService {
     TransferTaxes update(Long id, TransferTaxesUpdateRequest transferTaxes);
     void deleteById(Long id);
 
-    Double calculateTax(Double amount, Integer days);
+    Double calculateTax(Double amount, Long days);
 
 }

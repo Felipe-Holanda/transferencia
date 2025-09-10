@@ -1,8 +1,8 @@
 package com.bank.evolve.service.impl;
 
-import com.bank.evolve.dto.AdminUpdateRequest;
-import com.bank.evolve.dto.RegisterRequest;
-import com.bank.evolve.dto.UpdateRequest;
+import com.bank.evolve.dto.Request.AdminUpdateRequest;
+import com.bank.evolve.dto.Request.RegisterRequest;
+import com.bank.evolve.dto.Request.UpdateRequest;
 import com.bank.evolve.entity.User;
 import com.bank.evolve.repository.UserRepository;
 import com.bank.evolve.helper.CpfHelper;
