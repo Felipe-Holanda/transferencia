@@ -1,7 +1,7 @@
 package com.bank.evolve.service.impl;
 
-import com.bank.evolve.dto.TransferTaxesRequest;
-import com.bank.evolve.dto.TransferTaxesUpdateRequest;
+import com.bank.evolve.dto.Request.TransferTaxesRequest;
+import com.bank.evolve.dto.Request.TransferTaxesUpdateRequest;
 import com.bank.evolve.entity.TransferTaxes;
 import com.bank.evolve.service.TransferTaxesService;
 import com.bank.evolve.repository.TransferTaxesRepository;
@@ -52,7 +52,7 @@ public class TransferTaxesServiceImpl implements TransferTaxesService {
         transferTaxesRepository.delete(foundTax);
     }
 
-    public Double calculateTax(Double amount, Integer days){
+    public Double calculateTax(Double amount, Long days){
         List<TransferTaxes> taxes = transferTaxesRepository.findAll();
 
         TransferTaxes applicableTax = taxes.stream()

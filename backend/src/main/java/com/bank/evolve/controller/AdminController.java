@@ -1,9 +1,11 @@
 package com.bank.evolve.controller;
 
-import com.bank.evolve.dto.AdminUpdateRequest;
-import com.bank.evolve.dto.TransferTaxesRequest;
-import com.bank.evolve.dto.TransferTaxesUpdateRequest;
+import com.bank.evolve.dto.Request.AdminUpdateRequest;
+import com.bank.evolve.dto.Request.TransferTaxesRequest;
+import com.bank.evolve.dto.Request.TransferTaxesUpdateRequest;
+import com.bank.evolve.dto.Response.TransactionResponse;
 import com.bank.evolve.entity.TransferTaxes;
+import com.bank.evolve.service.TransactionService;
 import com.bank.evolve.service.TransferTaxesService;
 import com.bank.evolve.service.UserService;
 import com.bank.evolve.entity.User;
@@ -22,6 +24,7 @@ public class AdminController {
 
     UserService userService;
     TransferTaxesService transferTaxesService;
+    TransactionService transactionService;
 
     public AdminController(UserService userService, TransferTaxesService transferTaxesService) {
         this.userService = userService;
@@ -63,7 +66,7 @@ public class AdminController {
     }
 
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    // @@@@@  Transfer Taxes Ednpoints  @@@@@@
+    // @@@@@  Transfer Taxes Endpoints  @@@@@@
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     @PostMapping("/taxes")
@@ -90,4 +93,14 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // @@@@@  Additional Admin Endpoints @@@@@
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    @GetMapping("/transactions/id/{id}")
+    public ResponseEntity<Object> getTransactionById(@PathVariable Long id) {
+        User foundUser = userService.adminFindById(id);
+        List<TransactionResponse> transactions = transactionService.getTransactionsByUser(foundUser);
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
+    }
 }
