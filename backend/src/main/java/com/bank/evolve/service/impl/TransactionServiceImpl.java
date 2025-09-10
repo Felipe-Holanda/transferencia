@@ -10,8 +10,9 @@ import com.bank.evolve.service.TransactionService;
 import com.bank.evolve.entity.Transaction;
 import com.bank.evolve.entity.User;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.bank.evolve.service.TransferTaxesService;
@@ -29,17 +30,19 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     public TransactionServiceImpl(TransactionRepository transactionRepository,
-                                  UserRepository userRepository) {
+                                  UserRepository userRepository,
+                                  TransferTaxesService transferTaxesService) {
+        this.transferTaxesService = transferTaxesService;
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
     }
 
     public Transaction createTransaction(User user, User targetUser, TransactionRequest transactionRequest) {
 
-        Date today = new Date();
-        Date targetDate = transactionRequest.getTransactionDate();
+        LocalDate today = LocalDate.now();
+        LocalDate targetDate = transactionRequest.getTargetDate();
 
-        if(targetDate.before(today)){
+        if(targetDate.isBefore(today)){
             throw new AppError("A data da transação não pode ser anterior a data atual.", HttpStatus.BAD_REQUEST);
         }
 
@@ -48,13 +51,13 @@ public class TransactionServiceImpl implements TransactionService {
             throw new AppError("O valor da transação deve ser maior que zero.", HttpStatus.BAD_REQUEST);
         }
 
-        long diffInMillies = targetDate.getTime() - today.getTime();
-        long totalDays = diffInMillies / (1000 * 60 * 60 * 24);
-        if(totalDays < 0){
+        long days = ChronoUnit.DAYS.between(LocalDate.now(), transactionRequest.getTargetDate());
+
+        if(days < 0){
             throw new AppError("A data da transação não pode ser anterior a data atual.", HttpStatus.BAD_REQUEST);
         }
 
-        Double totalWithFees = transferTaxesService.calculateTax(transactionRequest.getAmount(), totalDays);
+        Double totalWithFees = transferTaxesService.calculateTax(transactionRequest.getAmount(), days);
 
         if(user.getBalance() < totalWithFees){
             throw new AppError("Você não tem saldo suficiente para realizar essa transação.", HttpStatus.FORBIDDEN);
@@ -68,7 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
                 totalWithFees - amount,
                 user,
                 targetUser,
-                transactionRequest.getTransactionDate(),
+                transactionRequest.getTargetDate(),
                 transactionHash
         );
 
@@ -85,6 +88,8 @@ public class TransactionServiceImpl implements TransactionService {
             throw new AppError("O valor do depósito deve ser maior que zero.", HttpStatus.BAD_REQUEST);
         }
 
+        LocalDate today = LocalDate.now();
+
         String transactionHash = HashUtil.transactionHash("DEPOSIT", user.getAccountNumber(), amount);
 
         Transaction transaction = new Transaction(
@@ -93,7 +98,7 @@ public class TransactionServiceImpl implements TransactionService {
                 0.0,
                 null,
                 user,
-                new Date(),
+                today,
                 transactionHash
         );
 

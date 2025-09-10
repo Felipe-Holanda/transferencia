@@ -1,9 +1,12 @@
 package com.bank.evolve.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -13,11 +16,12 @@ public class TransactionRequest {
     @NotBlank(message = "Você deve informar a conta de destino")
     private String targetAccount;
 
-    @NotBlank(message = "Você deve informar o valor da transação")
+    @NotNull(message = "Você deve informar o valor da transação")
     private Double amount;
 
-    @NotBlank(message = "Você deve informar a data da transação")
-    private Date transactionDate;
+    @NotNull(message = "Você deve informar a data do agendamento")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate targetDate;
 
     private String description;
 }
