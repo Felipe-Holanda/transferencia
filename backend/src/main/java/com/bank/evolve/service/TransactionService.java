@@ -11,4 +11,5 @@ public interface TransactionService {
     Transaction createTransaction(User user, User targetUser, TransactionRequest transactionRequest);
     Transaction deposit(User user, double amount);
     List<TransactionResponse> getTransactionsByUser(User user);
+    void cancelTransaction(User user, Long transactionId, String reason);
 }

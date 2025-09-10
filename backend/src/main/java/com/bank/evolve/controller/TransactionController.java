@@ -2,6 +2,7 @@ package com.bank.evolve.controller;
 
 import com.bank.evolve.entity.User;
 import com.bank.evolve.dto.request.CalculateTaxesRequest;
+import com.bank.evolve.dto.request.CancelTransactionRequest;
 import com.bank.evolve.dto.request.DepositRequest;
 import com.bank.evolve.dto.request.TransactionRequest;
 import com.bank.evolve.entity.Transaction;
@@ -70,4 +71,15 @@ public class TransactionController {
         return new ResponseEntity<>(transactionService.getTransactionsByUser(foundUser), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> cancelTransaction(@NotNull Authentication authentication, @PathVariable Long id, @RequestBody CancelTransactionRequest cancelRequest){
+        String email = authentication.getName();
+        User foundUser = userService.findByEmail(email);
+        transactionService.cancelTransaction(foundUser, id, cancelRequest.getReason());
+        
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "Transação cancelada com sucesso.");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
