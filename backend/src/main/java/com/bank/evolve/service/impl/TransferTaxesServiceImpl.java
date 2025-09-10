@@ -52,8 +52,27 @@ public class TransferTaxesServiceImpl implements TransferTaxesService {
         transferTaxesRepository.delete(foundTax);
     }
 
-    public Double calculateTax(Double amount, Long days){
+    public Double calculateTax(Double amount, Long days) {
+
+        if (amount <= 0) {
+            throw new AppError("O valor da transferência deve ser maior que zero", HttpStatus.BAD_REQUEST);
+        }
+
+        if (days < 0) {
+            throw new AppError("Você não pode informar uma data anterior!", HttpStatus.BAD_REQUEST);
+        }
+
         List<TransferTaxes> taxes = transferTaxesRepository.findAll();
+
+
+        Integer maxDefinedDays = taxes.stream()
+                .mapToInt(TransferTaxes::getAmountDays)
+                .max()
+                .orElseThrow(() -> new AppError("Nenhuma taxa de transferência definida no sistema, tente novamente mais tarde!", HttpStatus.NOT_ACCEPTABLE));
+
+        if (days > maxDefinedDays) {
+            throw new AppError("Nenhuma taxa aplicável encontrada para a quantidade de dias informada", HttpStatus.FORBIDDEN);
+        }
 
         TransferTaxes applicableTax = taxes.stream()
                 .filter(tax -> tax.getAmountDays() <= days)

@@ -4,6 +4,9 @@ import com.bank.evolve.dto.request.AdminUpdateRequest;
 import com.bank.evolve.dto.request.RegisterRequest;
 import com.bank.evolve.dto.request.UpdateRequest;
 import com.bank.evolve.entity.User;
+
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
@@ -29,4 +32,6 @@ public interface UserService extends UserDetailsService {
     User blockUnblockUser(Long id);
 
     void hardDeleteUser(Long id);
+
+    List<User> adminFindAll();
 }

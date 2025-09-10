@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -111,6 +112,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
         existingUser.setIsActive(false);
         userRepository.save(existingUser);
+
     }
 
     public String authenticate(String email, String password) {
@@ -144,6 +146,10 @@ public class UserServiceImpl implements UserService {
                 user.getPasswordHash(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()))
         );
+    }
+
+    public List<User> adminFindAll() {
+        return userRepository.findAll();
     }
 
     public User adminFindById(Long id) {

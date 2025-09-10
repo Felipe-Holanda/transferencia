@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import com.bank.evolve.service.UserService;
 import com.bank.evolve.dto.request.RegisterRequest;
 import com.bank.evolve.dto.request.UpdateRequest;
+import com.bank.evolve.dto.response.UserResponse;
 import com.bank.evolve.entity.User;
 
 import org.springframework.lang.NonNull;
@@ -48,7 +49,15 @@ public class UserController {
     @GetMapping("/account/{accountNumber}")
     public ResponseEntity<Object> getUserByAccountNumber(@PathVariable String accountNumber) {
         User user = userService.findByAccountNumber(accountNumber);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+
+        UserResponse userResponse = new UserResponse();
+        userResponse.setName(user.getFullName());
+        userResponse.setAccountNumber(user.getAccountNumber());
+
+        String maskedCpf = user.getCpf().substring(0, 4) + "***.**" + user.getCpf().substring(10);
+        userResponse.setCpf(maskedCpf);
+
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
     @PatchMapping()

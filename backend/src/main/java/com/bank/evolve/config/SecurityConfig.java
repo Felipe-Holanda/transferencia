@@ -39,7 +39,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter, 
+                                                   CustomAccessDeniedHandler accessDeniedHandler) throws Exception {
         http
             .cors().and()
             .csrf().disable()
@@ -50,7 +51,10 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

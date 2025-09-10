@@ -10,6 +10,8 @@ import com.bank.evolve.util.HashUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Random;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -66,12 +68,12 @@ public class DataLoader implements CommandLineRunner {
             upTo40Days.setTaxPercentage(4.7);
             transferTaxesRepository.save(upTo40Days);
             
-            // Taxa para transferências acima de 40 dias
-            TransferTaxes above40Days = new TransferTaxes();
-            above40Days.setAmountDays(999);
-            above40Days.setFixedTax(0.0);
-            above40Days.setTaxPercentage(1.7);
-            transferTaxesRepository.save(above40Days);
+            // Taxa para transferências entre 41 a 50 dias
+            TransferTaxes upTo50Days = new TransferTaxes();
+            upTo50Days.setAmountDays(50);
+            upTo50Days.setFixedTax(0.0);
+            upTo50Days.setTaxPercentage(1.7);
+            transferTaxesRepository.save(upTo50Days);
             
             log.info("Taxas de transferência padrão criadas com sucesso!");
         } else {
@@ -87,6 +89,9 @@ public class DataLoader implements CommandLineRunner {
             User adminUser = new User();
             adminUser.setFullName("Admin User");
             adminUser.setEmail("admin@example.com");
+            adminUser.setCpf("000.000.000-00");
+            adminUser.setPhone("(00) 0 0000-0000");
+            adminUser.setAccountNumber(String.format("%010d", new Random().nextInt(1_000_000_000)));
             adminUser.setPasswordHash(HashUtil.hashPassword("@Admin123"));
             adminUser.setRole(Roles.ADMIN);
             userRepository.save(adminUser);

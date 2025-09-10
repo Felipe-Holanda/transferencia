@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/transaction")
@@ -32,9 +36,11 @@ public class TransactionController {
 
     @GetMapping("/calculate")
     public ResponseEntity<Object> calculateTaxes(@RequestBody @Valid CalculateTaxesRequest calculateTaxesRequest){
-        Long days = (calculateTaxesRequest.getTargetDate().getTime() - System.currentTimeMillis()) / (1000 * 60 * 60 * 24);
+        long days = ChronoUnit.DAYS.between(LocalDate.now(), calculateTaxesRequest.getTargetDate());
         Double calculatedTax = transferTaxesService.calculateTax(calculateTaxesRequest.getAmount(), days);
-        return new ResponseEntity<>(calculatedTax, HttpStatus.OK);
+        HashMap<String, Double> response = new HashMap<>();
+        response.put("calculatedTax", calculatedTax);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping

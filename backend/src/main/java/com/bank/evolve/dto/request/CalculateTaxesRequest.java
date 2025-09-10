@@ -1,9 +1,10 @@
 package com.bank.evolve.dto.request;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +17,6 @@ public class CalculateTaxesRequest {
     private Double amount;
 
     @NotNull(message = "Você deve informar a data do agendamento")
-    private Date targetDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate targetDate;
 }

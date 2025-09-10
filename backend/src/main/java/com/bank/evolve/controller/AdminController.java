@@ -35,6 +35,12 @@ public class AdminController {
     // @@@@@  User Management Endpoints @@@@@@
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+    @GetMapping("/user")
+    public ResponseEntity<Object> getAllUsers() {
+        List<User> users = userService.adminFindAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
     @GetMapping("/user/id/{id}")
     public ResponseEntity<Object> getUserById(@PathVariable Long id) {
         User foundUser = userService.adminFindById(id);
