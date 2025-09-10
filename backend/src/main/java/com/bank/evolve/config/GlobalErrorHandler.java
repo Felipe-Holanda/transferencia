@@ -23,7 +23,6 @@ public class GlobalErrorHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> handleException(Exception e) {
-        System.err.println(e.getMessage());
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Erro interno do servidor");
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
