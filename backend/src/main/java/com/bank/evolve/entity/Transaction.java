@@ -1,6 +1,5 @@
 package com.bank.evolve.entity;
 
-import com.bank.evolve.enums.TransactionTypes;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;

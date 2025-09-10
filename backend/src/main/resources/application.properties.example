@@ -1,43 +1,33 @@
 spring.application.name=evolve
 
 # ===============================
-# Configuração do Banco (SQLite)
+# Configuracao do Banco H2 (Persistencia Local)
 # ===============================
-spring.datasource.url=jdbc:sqlite:evolve.db
-spring.datasource.driverClassName=org.sqlite.JDBC
+spring.datasource.url=jdbc:h2:file:./data/evolve;DB_CLOSE_ON_EXIT=FALSE
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
 spring.jpa.hibernate.ddl-auto=update
-spring.jpa.database-platform=com.github.gwenn.sqlite.SQLiteDialect
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.show-sql=false
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+spring.h2.console.settings.web-allow-others=false
 
 # ===============================
-# Configuração de Logging
+# Configuracao de Logging
 # ===============================
 logging.level.org.springframework.security=INFO
 logging.level.org.hibernate.SQL=DEBUG
 
 # ===============================
-# Configuração JWT
+# Configuracao JWT
 # ===============================
 app.jwt.secret=YmVzdC1rZXB0LXNlY3JldC1mb3Itand0LXRlc3RpbmctcHVycG9zZXM=
 app.jwt.expiration-ms=3600000
 
 # ===============================
-# Configuração OTP (recuperação de senha)
-# ===============================
-app.otp.expiration-ms=300000
-
-# ===============================
-# Configuração de Locale/Timezone (opcional)
+# Configuracao de Locale/Timezone (opcional)
 # ===============================
 spring.jackson.time-zone=America/Sao_Paulo
 spring.jackson.locale=pt_BR
-
-# ===============================
-# Configuração de envio de e-mail (SMTP)
-# ===============================
-spring.mail.host=
-spring.mail.port=
-spring.mail.username=
-spring.mail.password=
-spring.mail.properties.mail.smtp.auth=
-spring.mail.properties.mail.smtp.starttls.enable=
-spring.mail.properties.mail.smtp.starttls.required=

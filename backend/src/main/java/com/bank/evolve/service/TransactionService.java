@@ -1,7 +1,7 @@
 package com.bank.evolve.service;
 
-import com.bank.evolve.dto.Request.TransactionRequest;
-import com.bank.evolve.dto.Response.TransactionResponse;
+import com.bank.evolve.dto.request.TransactionRequest;
+import com.bank.evolve.dto.response.TransactionResponse;
 import com.bank.evolve.entity.Transaction;
 import com.bank.evolve.entity.User;
 

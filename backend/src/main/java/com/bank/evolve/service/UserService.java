@@ -1,8 +1,8 @@
 package com.bank.evolve.service;
 
-import com.bank.evolve.dto.Request.AdminUpdateRequest;
-import com.bank.evolve.dto.Request.RegisterRequest;
-import com.bank.evolve.dto.Request.UpdateRequest;
+import com.bank.evolve.dto.request.AdminUpdateRequest;
+import com.bank.evolve.dto.request.RegisterRequest;
+import com.bank.evolve.dto.request.UpdateRequest;
 import com.bank.evolve.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

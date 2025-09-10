@@ -1,9 +1,9 @@
 package com.bank.evolve.controller;
 
-import com.bank.evolve.dto.Request.AdminUpdateRequest;
-import com.bank.evolve.dto.Request.TransferTaxesRequest;
-import com.bank.evolve.dto.Request.TransferTaxesUpdateRequest;
-import com.bank.evolve.dto.Response.TransactionResponse;
+import com.bank.evolve.dto.request.AdminUpdateRequest;
+import com.bank.evolve.dto.request.TransferTaxesRequest;
+import com.bank.evolve.dto.request.TransferTaxesUpdateRequest;
+import com.bank.evolve.dto.response.TransactionResponse;
 import com.bank.evolve.entity.TransferTaxes;
 import com.bank.evolve.service.TransactionService;
 import com.bank.evolve.service.TransferTaxesService;

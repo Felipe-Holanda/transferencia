@@ -1,7 +1,7 @@
 package com.bank.evolve.service.impl;
 
-import com.bank.evolve.dto.Request.TransferTaxesRequest;
-import com.bank.evolve.dto.Request.TransferTaxesUpdateRequest;
+import com.bank.evolve.dto.request.TransferTaxesRequest;
+import com.bank.evolve.dto.request.TransferTaxesUpdateRequest;
 import com.bank.evolve.entity.TransferTaxes;
 import com.bank.evolve.service.TransferTaxesService;
 import com.bank.evolve.repository.TransferTaxesRepository;

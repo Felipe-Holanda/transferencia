@@ -1,8 +1,5 @@
 package com.bank.evolve.service.impl;
 
-import com.bank.evolve.dto.Request.AdminUpdateRequest;
-import com.bank.evolve.dto.Request.RegisterRequest;
-import com.bank.evolve.dto.Request.UpdateRequest;
 import com.bank.evolve.entity.User;
 import com.bank.evolve.repository.UserRepository;
 import com.bank.evolve.helper.CpfHelper;
@@ -10,6 +7,9 @@ import com.bank.evolve.service.UserService;
 import com.bank.evolve.util.HashUtil;
 import com.bank.evolve.util.AppError;
 import com.bank.evolve.config.JwtUtil;
+import com.bank.evolve.dto.request.AdminUpdateRequest;
+import com.bank.evolve.dto.request.RegisterRequest;
+import com.bank.evolve.dto.request.UpdateRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -121,9 +121,7 @@ public class UserServiceImpl implements UserService {
             throw new AppError("Credenciais inválidas", HttpStatus.UNAUTHORIZED);
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
-
-        return token;
+        return jwtUtil.generateToken(user.getEmail());
     }
 
     @Override
@@ -149,9 +147,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public User adminFindById(Long id) {
-        User foundUser = userRepository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new AppError("Usuário não encontrado", HttpStatus.NOT_FOUND));
-        return foundUser;
     }
 
     public User adminUpdate(Long id, AdminUpdateRequest request) {

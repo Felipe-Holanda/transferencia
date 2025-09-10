@@ -1,8 +1,8 @@
 package com.bank.evolve.controller;
 
-import com.bank.evolve.dto.Request.DepositRequest;
-import com.bank.evolve.dto.Request.TransactionRequest;
 import com.bank.evolve.entity.User;
+import com.bank.evolve.dto.request.DepositRequest;
+import com.bank.evolve.dto.request.TransactionRequest;
 import com.bank.evolve.entity.Transaction;
 import com.bank.evolve.service.TransactionService;
 import com.bank.evolve.service.UserService;
