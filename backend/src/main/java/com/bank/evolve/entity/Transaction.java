@@ -1,13 +1,13 @@
 package com.bank.evolve.entity;
 
-import com.bank.evolve.enums.TransactionTypes;
+import com.bank.evolve.enums.TransactionStatus;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -18,7 +18,7 @@ public class Transaction {
     public Transaction () {}
 
     public Transaction (Double amount, String description, double taxes,
-            User sender, User recipient, Date targetDate, String transactionHash) {
+            User sender, User recipient, LocalDate targetDate, String transactionHash) {
         this.amount = amount;
         this.description = description;
         this.taxes = taxes;
@@ -26,6 +26,7 @@ public class Transaction {
         this.recipient = recipient;
         this.targetDate = targetDate;
         this.transactionHash = transactionHash;
+        this.status = LocalDate.now().equals(targetDate) ? TransactionStatus.COMPLETED : TransactionStatus.PENDING;
     }
 
     @Id
@@ -50,7 +51,7 @@ public class Transaction {
     private User recipient;
 
     @Column
-    private Date targetDate;
+    private LocalDate targetDate;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -58,5 +59,9 @@ public class Transaction {
 
     @Column(nullable = false, updatable = false)
     private String transactionHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionStatus status = TransactionStatus.PENDING;
 }
 

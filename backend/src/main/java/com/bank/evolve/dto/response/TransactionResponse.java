@@ -1,8 +1,13 @@
-package com.bank.evolve.dto.Response;
+package com.bank.evolve.dto.response;
 
 import com.bank.evolve.enums.TransactionDirection;
 import com.bank.evolve.enums.TransactionTypes;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class TransactionResponse {
 
     public TransactionResponse(String senderName, String transactionId, String description, double amount, TransactionDirection direction, String date, TransactionTypes type) {

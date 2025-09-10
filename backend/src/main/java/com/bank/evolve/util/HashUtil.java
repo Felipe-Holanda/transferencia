@@ -1,6 +1,6 @@
 package com.bank.evolve.util;
 
-import jdk.jfr.Timestamp;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Base64;
@@ -36,7 +36,7 @@ public class HashUtil {
 			return Base64.getEncoder().encodeToString(hash);
 
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("Erro ao gerar hash da transação");
+			throw new AppError("Erro ao gerar hash da transação", HttpStatus.PRECONDITION_FAILED);
 		}
 	}
 }

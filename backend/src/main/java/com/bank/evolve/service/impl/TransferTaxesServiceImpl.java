@@ -1,7 +1,7 @@
 package com.bank.evolve.service.impl;
 
-import com.bank.evolve.dto.Request.TransferTaxesRequest;
-import com.bank.evolve.dto.Request.TransferTaxesUpdateRequest;
+import com.bank.evolve.dto.request.TransferTaxesRequest;
+import com.bank.evolve.dto.request.TransferTaxesUpdateRequest;
 import com.bank.evolve.entity.TransferTaxes;
 import com.bank.evolve.service.TransferTaxesService;
 import com.bank.evolve.repository.TransferTaxesRepository;
@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransferTaxesServiceImpl implements TransferTaxesService {
@@ -30,6 +31,13 @@ public class TransferTaxesServiceImpl implements TransferTaxesService {
 
     public TransferTaxes createNew(TransferTaxesRequest transferTaxes){
         TransferTaxes newTransferTaxes = new TransferTaxes();
+
+        List<TransferTaxes> taxes = transferTaxesRepository.findAll();
+
+        if(taxes.stream().anyMatch(tax -> tax.getAmountDays() == transferTaxes.getAmountDays())){
+            throw new AppError("Já existe uma taxa cadastrada para essa quantidade de dias", HttpStatus.CONFLICT);
+        }
+
         newTransferTaxes.setAmountDays(transferTaxes.getAmountDays());
         newTransferTaxes.setFixedTax(transferTaxes.getFixedTax());
         newTransferTaxes.setTaxPercentage(transferTaxes.getTaxPercentage());
@@ -52,8 +60,27 @@ public class TransferTaxesServiceImpl implements TransferTaxesService {
         transferTaxesRepository.delete(foundTax);
     }
 
-    public Double calculateTax(Double amount, Long days){
+    public Double calculateTax(Double amount, Long days) {
+
+        if (amount <= 0) {
+            throw new AppError("O valor da transferência deve ser maior que zero", HttpStatus.BAD_REQUEST);
+        }
+
+        if (days < 0) {
+            throw new AppError("Você não pode informar uma data anterior!", HttpStatus.BAD_REQUEST);
+        }
+
         List<TransferTaxes> taxes = transferTaxesRepository.findAll();
+
+
+        Integer maxDefinedDays = taxes.stream()
+                .mapToInt(TransferTaxes::getAmountDays)
+                .max()
+                .orElseThrow(() -> new AppError("Nenhuma taxa de transferência definida no sistema, tente novamente mais tarde!", HttpStatus.NOT_ACCEPTABLE));
+
+        if (days > maxDefinedDays) {
+            throw new AppError("Nenhuma taxa aplicável encontrada para a quantidade de dias informada", HttpStatus.FORBIDDEN);
+        }
 
         TransferTaxes applicableTax = taxes.stream()
                 .filter(tax -> tax.getAmountDays() <= days)

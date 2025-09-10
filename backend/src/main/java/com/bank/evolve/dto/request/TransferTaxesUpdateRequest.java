@@ -1,4 +1,4 @@
-package com.bank.evolve.dto.Request;
+package com.bank.evolve.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
