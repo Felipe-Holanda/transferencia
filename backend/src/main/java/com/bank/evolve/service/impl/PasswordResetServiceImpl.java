@@ -34,7 +34,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Transactional
     public void requestPasswordReset(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppError("Usuário não encontrado com este email", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppError("Este email não está cadastrado no sistema!", HttpStatus.NOT_FOUND));
 
         if (!user.getIsActive()) {
             throw new AppError("Conta inativa. Entre em contato com o suporte", HttpStatus.BAD_REQUEST);

@@ -81,7 +81,7 @@ public class TransactionServiceImpl implements TransactionService {
             userRepository.save(targetUser);
         }
         
-        return transaction;
+        return transactionRepository.save(transaction);
     }
 
     public Transaction deposit(User user, double amount){
@@ -103,12 +103,12 @@ public class TransactionServiceImpl implements TransactionService {
 
         user.setBalance(user.getBalance() + amount);
         userRepository.save(user);
-        return transaction;
+        return transactionRepository.save(transaction);
     }
 
     public List<TransactionResponse> getTransactionsByUser(User user){
 
-        List<Transaction> transactions = transactionRepository.findBySenderOrRecipient(user, user);
+        List<Transaction> transactions = transactionRepository.findAllFromUser(user);
         List<TransactionResponse> transactionResponses = new ArrayList<>();
 
         for(Transaction transaction : transactions) {
