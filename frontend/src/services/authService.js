@@ -15,8 +15,16 @@ export const authService = {
       if (response.data?.token) {
         localStorage.setItem('token', response.data.token)
         
-        if (response.data.user) {
-          localStorage.setItem('user', JSON.stringify(response.data.user))
+        // Buscar dados do usuário após login bem-sucedido
+        try {
+          const userResponse = await api.get('/user')
+          if (userResponse.data) {
+            localStorage.setItem('user', JSON.stringify(userResponse.data))
+          }
+        } catch (userError) {
+          console.error('Erro ao buscar dados do usuário após login:', userError)
+          // Não falha o login se não conseguir buscar os dados do usuário
+          // Os dados serão buscados quando necessário
         }
       }
       
