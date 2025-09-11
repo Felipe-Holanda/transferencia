@@ -1,0 +1,13 @@
+# Docker ignore file
+target/
+!target/evolve-0.0.1-SNAPSHOT.jar
+.git/
+.gitignore
+*.md
+.DS_Store
+.vscode/
+.idea/
+*.iml
+mvnw
+mvnw.cmd
+src/test/
