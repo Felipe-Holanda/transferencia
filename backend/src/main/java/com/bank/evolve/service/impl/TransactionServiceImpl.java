@@ -1,7 +1,9 @@
 package com.bank.evolve.service.impl;
 
 import com.bank.evolve.dto.request.TransactionRequest;
+import com.bank.evolve.dto.response.AdminTransactionResponse;
 import com.bank.evolve.dto.response.TransactionResponse;
+import com.bank.evolve.dto.response.UserDto;
 import com.bank.evolve.enums.TransactionDirection;
 import com.bank.evolve.enums.TransactionStatus;
 import com.bank.evolve.enums.TransactionTypes;
@@ -121,7 +123,9 @@ public class TransactionServiceImpl implements TransactionService {
                         transaction.getAmount(),
                         TransactionDirection.INCOMING,
                         transaction.getTargetDate().toString(),
-                        TransactionTypes.DEPOSIT));
+                        TransactionTypes.DEPOSIT,
+                        transaction.getStatus()
+                        ));
             }else if(transaction.getSender().getId().equals(user.getId())) {
                 //Envio
                 String statusSuffix = "";
@@ -138,7 +142,8 @@ public class TransactionServiceImpl implements TransactionService {
                         transaction.getAmount() + transaction.getTaxes(),
                         TransactionDirection.OUTGOING,
                         transaction.getTargetDate().toString(),
-                        TransactionTypes.TRANSFER));
+                        TransactionTypes.TRANSFER,
+                        transaction.getStatus()));
             }else {
                 //Recebimento
                 String statusSuffix = "";
@@ -155,7 +160,8 @@ public class TransactionServiceImpl implements TransactionService {
                         transaction.getAmount(),
                         TransactionDirection.INCOMING,
                         transaction.getTargetDate().toString(),
-                        TransactionTypes.TRANSFER));
+                        TransactionTypes.TRANSFER,
+                        transaction.getStatus()));
             }
         }
 
@@ -179,6 +185,43 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setStatus(TransactionStatus.CANCELLED);
         
         transactionRepository.save(transaction);
+    }
+
+    public List<AdminTransactionResponse> getAllTransactions() {
+        List<Transaction> transactions = transactionRepository.findAll();
+
+        List<AdminTransactionResponse> adminTransactionResponses = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            UserDto sender = new UserDto();
+            UserDto recipient = new UserDto();
+            AdminTransactionResponse adminTransactionResponse = new AdminTransactionResponse();
+
+            adminTransactionResponse.setAmount(transaction.getAmount());
+            adminTransactionResponse.setDescription(transaction.getDescription());
+            adminTransactionResponse.setTaxes(transaction.getTaxes());
+            adminTransactionResponse.setTargetDate(transaction.getTargetDate());
+            adminTransactionResponse.setTransactionHash(transaction.getTransactionHash());
+            adminTransactionResponse.setStatus(transaction.getStatus());
+
+            if (transaction.getSender() != null) {
+                sender.setId(transaction.getSender().getId());
+                sender.setFullName(transaction.getSender().getFullName());
+                sender.setAccountNumber(transaction.getSender().getAccountNumber());
+                adminTransactionResponse.setSender(sender);
+            }
+
+            if (transaction.getRecipient() != null) {
+                recipient.setId(transaction.getRecipient().getId());
+                recipient.setFullName(transaction.getRecipient().getFullName());
+                recipient.setAccountNumber(transaction.getRecipient().getAccountNumber());
+                adminTransactionResponse.setRecipient(recipient);
+            }
+
+            adminTransactionResponses.add(adminTransactionResponse);
+        }
+
+        return adminTransactionResponses;
     }
 
 }

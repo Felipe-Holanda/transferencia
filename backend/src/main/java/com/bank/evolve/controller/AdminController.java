@@ -3,6 +3,7 @@ package com.bank.evolve.controller;
 import com.bank.evolve.dto.request.AdminUpdateRequest;
 import com.bank.evolve.dto.request.TransferTaxesRequest;
 import com.bank.evolve.dto.request.TransferTaxesUpdateRequest;
+import com.bank.evolve.dto.response.AdminTransactionResponse;
 import com.bank.evolve.dto.response.TransactionResponse;
 import com.bank.evolve.entity.TransferTaxes;
 import com.bank.evolve.service.TransactionService;
@@ -26,9 +27,10 @@ public class AdminController {
     TransferTaxesService transferTaxesService;
     TransactionService transactionService;
 
-    public AdminController(UserService userService, TransferTaxesService transferTaxesService) {
+    public AdminController(UserService userService, TransferTaxesService transferTaxesService, TransactionService transactionService) {
         this.userService = userService;
         this.transferTaxesService = transferTaxesService;
+        this.transactionService = transactionService;
     }
 
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -102,6 +104,12 @@ public class AdminController {
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     // @@@@@  Additional Admin Endpoints @@@@@
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    @GetMapping("/transactions")
+    public ResponseEntity<Object> listAllTransactions() {
+        List<AdminTransactionResponse> transactions = transactionService.getAllTransactions();
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
+    }
 
     @GetMapping("/transactions/id/{id}")
     public ResponseEntity<Object> getTransactionById(@PathVariable Long id) {

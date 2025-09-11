@@ -1,6 +1,7 @@
 package com.bank.evolve.service;
 
 import com.bank.evolve.dto.request.TransactionRequest;
+import com.bank.evolve.dto.response.AdminTransactionResponse;
 import com.bank.evolve.dto.response.TransactionResponse;
 import com.bank.evolve.entity.Transaction;
 import com.bank.evolve.entity.User;
@@ -12,4 +13,5 @@ public interface TransactionService {
     Transaction deposit(User user, double amount);
     List<TransactionResponse> getTransactionsByUser(User user);
     void cancelTransaction(User user, Long transactionId, String reason);
+    List<AdminTransactionResponse> getAllTransactions();
 }

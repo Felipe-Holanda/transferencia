@@ -43,7 +43,7 @@ public class AuthController {
         passwordResetService.requestPasswordReset(request.getEmail());
         
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Se o email estiver cadastrado, você receberá um código de verificação em instantes.");
+        response.put("message", "Instruções para redefinição de senha enviadas para o e-mail!");
         
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

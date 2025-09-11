@@ -34,7 +34,7 @@ public class TransactionController {
         this.transferTaxesService = transferTaxesService;
     }
 
-    @GetMapping("/calculate")
+    @PostMapping("/calculate")
     public ResponseEntity<Object> calculateTaxes(@RequestBody @Valid CalculateTaxesRequest calculateTaxesRequest){
         long days = ChronoUnit.DAYS.between(LocalDate.now(), calculateTaxesRequest.getTargetDate());
         Double calculatedTax = transferTaxesService.calculateTax(calculateTaxesRequest.getAmount(), days);
