@@ -191,6 +191,62 @@ export const transactionService = {
    */
   getTransactionPrefix(direction) {
     return direction === 'INCOMING' ? '+' : '-'
+  },
+
+  /**
+   * Formata o status da transação para exibição
+   * @param {string} status - Status da transação (PENDING, COMPLETED, CANCELLED)
+   * @returns {string} Status formatado em português
+   */
+  formatTransactionStatus(status) {
+    const statusMap = {
+      'PENDING': 'Pendente',
+      'COMPLETED': 'Concluído',
+      'CANCELLED': 'Cancelado'
+    }
+    return statusMap[status] || status
+  },
+
+  /**
+   * Retorna a cor CSS baseada no status da transação
+   * @param {string} status - Status da transação
+   * @returns {string} Classes CSS para estilização
+   */
+  getTransactionStatusColor(status) {
+    const colorMap = {
+      'PENDING': 'bg-yellow-100 text-yellow-800',
+      'COMPLETED': 'bg-green-100 text-green-800',
+      'CANCELLED': 'bg-red-100 text-red-800'
+    }
+    return colorMap[status] || 'bg-gray-100 text-gray-800'
+  },
+
+  /**
+   * Retorna o texto do tipo de transação formatado
+   * @param {string} type - Tipo da transação (DEPOSIT, WITHDRAWAL, TRANSFER)
+   * @returns {string} Tipo formatado em português
+   */
+  formatTransactionType(type) {
+    const typeMap = {
+      'DEPOSIT': 'Depósito',
+      'WITHDRAWAL': 'Saque',
+      'TRANSFER': 'Transferência'
+    }
+    return typeMap[type] || type
+  },
+
+  /**
+   * Retorna o ícone SVG baseado no tipo de transação
+   * @param {string} type - Tipo da transação
+   * @returns {string} Path do ícone SVG
+   */
+  getTransactionIconPath(type) {
+    const iconPaths = {
+      'DEPOSIT': 'M7 16l-4-4m0 0l4-4m-4 4h18',
+      'WITHDRAWAL': 'M17 8l4 4m0 0l-4 4m4-4H3',
+      'TRANSFER': 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4'
+    }
+    return iconPaths[type] || 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
   }
 }
 
