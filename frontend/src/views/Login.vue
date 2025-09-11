@@ -91,7 +91,17 @@
             </div>
           </button>
 
-          <div class="text-center">
+          <div class="text-center mt-4">
+            <button 
+              type="button" 
+              @click="goToForgotPassword" 
+              class="text-sm font-medium text-bank-primary-600 hover:text-bank-primary-500 transition-colors underline"
+            >
+              Esqueceu sua senha?
+            </button>
+          </div>
+
+          <div class="text-center mt-4">
             <span class="text-bank-secondary-600">Não tem uma conta?</span>
             <button 
               type="button" 
@@ -163,7 +173,7 @@ const handleLogin = async (event) => {
     
     // Aguardar um breve momento para o toast aparecer antes de redirecionar
     setTimeout(() => {
-      router.push('/dashboard') // ou rota apropriada após login
+      router.push('/dashboard')
     }, 500)
     
   } catch (error) {
@@ -176,5 +186,9 @@ const handleLogin = async (event) => {
 
 const goToCadastro = () => {
   router.push('/cadastro')
+}
+
+const goToForgotPassword = () => {
+  router.push('/forgot-password')
 }
 </script>

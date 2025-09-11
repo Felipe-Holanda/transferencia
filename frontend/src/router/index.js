@@ -6,6 +6,10 @@ import Transfer from '../views/Transfer.vue'
 import Deposit from '../views/Deposit.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import AccessDenied from '../views/AccessDenied.vue'
+import ForgotPassword from '../views/ForgotPassword.vue'
+import ResetPassword from '../views/ResetPassword.vue'
+import EditProfile from '../views/EditProfile.vue'
+import ChangePassword from '../views/ChangePassword.vue'
 import authService from '../services/authService.js'
 
 const routes = [
@@ -19,6 +23,18 @@ const routes = [
     path: '/cadastro',
     name: 'Cadastro',
     component: Cadastro,
+    meta: { requiresGuest: true }
+  },
+  {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: ForgotPassword,
+    meta: { requiresGuest: true }
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassword,
     meta: { requiresGuest: true }
   },
   {
@@ -44,6 +60,18 @@ const routes = [
     name: 'AdminDashboard',
     component: AdminDashboard,
     meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/edit-profile',
+    name: 'EditProfile',
+    component: EditProfile,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: ChangePassword,
+    meta: { requiresAuth: true }
   },
   {
     path: '/access-denied',
