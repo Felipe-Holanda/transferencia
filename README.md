@@ -12,6 +12,7 @@
 
 Esta aplicação foi desenvolvida para cumprir um desafio proposto na Segunda-Feira (08/09), onde eu deveria cumprir alguns requisitos:
 
+### Acesse o deploy desta aplicação [clicando aqui](https://vuebank.vercel.app/)
 
 > Aplicação + pequena documentação no README explicando suas decisões arquiteturais, versões de linguagem, ferramentas utilizadas e instruções para a subida do projeto.
  
