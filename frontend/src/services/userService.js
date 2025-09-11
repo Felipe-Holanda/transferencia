@@ -89,6 +89,14 @@ export const userService = {
   },
 
   /**
+   * Cancela/deleta conta do usuário (alias para deactivateAccount)
+   * @returns {Promise} Promise com a resposta da API
+   */
+  async deleteAccount() {
+    return this.deactivateAccount()
+  },
+
+  /**
    * Busca usuário por número da conta
    * @param {string} accountNumber - Número da conta
    * @returns {Promise} Promise com os dados do usuário

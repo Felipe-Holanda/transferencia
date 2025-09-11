@@ -17,10 +17,73 @@
               Dashboard Admin
             </button>
             
-            <!-- Informações do usuário -->
-            <div v-if="user" class="text-right">
-              <p class="text-sm font-medium text-gray-900">{{ user.fullName }}</p>
-              <p class="text-sm text-gray-500">Conta: {{ user.accountNumber }}</p>
+            <!-- Informações do usuário com dropdown -->
+            <div v-if="user" class="relative">
+              <button
+                @click="toggleUserMenu"
+                class="flex items-center space-x-3 text-right hover:bg-gray-50 p-2 rounded-md transition-colors"
+              >
+                <div class="text-right">
+                  <p class="text-sm font-medium text-gray-900">{{ user.fullName }}</p>
+                  <p class="text-sm text-gray-500">Conta: {{ user.accountNumber }}</p>
+                </div>
+                <svg
+                  class="w-5 h-5 text-gray-400 transform transition-transform"
+                  :class="{ 'rotate-180': isUserMenuOpen }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+
+              <!-- Dropdown Menu -->
+              <div
+                v-if="isUserMenuOpen"
+                class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50"
+              >
+                <button
+                  @click="goToEditProfile"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-3"
+                >
+                  <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                  <div>
+                    <p class="font-medium">Editar Perfil</p>
+                    <p class="text-xs text-gray-500">Alterar dados pessoais</p>
+                  </div>
+                </button>
+                
+                <button
+                  @click="goToChangePassword"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-3"
+                >
+                  <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                  </svg>
+                  <div>
+                    <p class="font-medium">Alterar Senha</p>
+                    <p class="text-xs text-gray-500">Redefinir sua senha</p>
+                  </div>
+                </button>
+
+                <hr class="my-1">
+                
+                <button
+                  @click="handleDeleteAccount"
+                  class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-3"
+                >
+                  <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                  <div>
+                    <p class="font-medium">Cancelar Conta</p>
+                    <p class="text-xs text-gray-500">Excluir permanentemente</p>
+                  </div>
+                </button>
+              </div>
             </div>
             
             <!-- Botão de logout -->
@@ -333,7 +396,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth.js'
 import userService from '../services/userService.js'
@@ -358,6 +421,9 @@ export default {
     // Estado do modal
     const isModalOpen = ref(false)
     const selectedTransaction = ref(null)
+    
+    // Estado do menu de usuário
+    const isUserMenuOpen = ref(false)
     
     // Filtros
     const transactionTypeFilter = ref('all')
@@ -457,10 +523,72 @@ export default {
       selectedTransaction.value = null
     }
 
+    // Controla o menu dropdown do usuário
+    const toggleUserMenu = () => {
+      isUserMenuOpen.value = !isUserMenuOpen.value
+    }
+
+    // Navega para a página de edição de perfil
+    const goToEditProfile = () => {
+      isUserMenuOpen.value = false
+      router.push('/edit-profile')
+    }
+
+    // Navega para a página de alteração de senha
+    const goToChangePassword = () => {
+      isUserMenuOpen.value = false
+      router.push('/change-password')
+    }
+
+    // Confirma e executa o cancelamento da conta
+    const handleDeleteAccount = async () => {
+      isUserMenuOpen.value = false
+      
+      const confirmed = confirm(
+        'Tem certeza que deseja cancelar sua conta?\n\n' +
+        'Esta ação é IRREVERSÍVEL e todos os seus dados serão perdidos permanentemente.\n\n' +
+        'Clique em "OK" para confirmar ou "Cancelar" para manter sua conta.'
+      )
+      
+      if (confirmed) {
+        try {
+          loading.value = true
+          await userService.deleteAccount()
+          
+          alert('Conta cancelada com sucesso. Você será redirecionado para a página inicial.')
+          
+          // Fazer logout e redirecionar
+          await logout()
+          router.push('/')
+          
+        } catch (error) {
+          alert('Erro ao cancelar conta: ' + (error.message || 'Erro interno do servidor'))
+        } finally {
+          loading.value = false
+        }
+      }
+    }
+
     // Carrega os dados quando o componente é montado
     onMounted(() => {
       loadDashboardData()
+      
+      // Adicionar event listener para fechar menu ao clicar fora
+      document.addEventListener('click', handleClickOutside)
     })
+
+    // Cleanup quando o componente for desmontado
+    onUnmounted(() => {
+      document.removeEventListener('click', handleClickOutside)
+    })
+
+    // Fechar menu ao clicar fora
+    const handleClickOutside = (event) => {
+      const userMenu = event.target.closest('.relative')
+      if (!userMenu && isUserMenuOpen.value) {
+        isUserMenuOpen.value = false
+      }
+    }
 
     return {
       // Estado
@@ -472,6 +600,9 @@ export default {
       // Estado do modal
       isModalOpen,
       selectedTransaction,
+      
+      // Estado do menu de usuário
+      isUserMenuOpen,
       
       // Filtros
       transactionTypeFilter,
@@ -491,6 +622,12 @@ export default {
       getTransactionPrefix,
       openTransactionModal,
       closeTransactionModal,
+      
+      // Métodos do menu de usuário
+      toggleUserMenu,
+      goToEditProfile,
+      goToChangePassword,
+      handleDeleteAccount,
       
       // Services
       transactionService
