@@ -92,7 +92,7 @@
                   @input="formatPhone"
                   type="text" 
                   required 
-                  maxlength="15"
+                  maxlength="16"
                   class="input-field"
                   placeholder="(00) 00000-0000"
                 >
@@ -318,6 +318,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import { userService } from '../services/userService.js'
+import authService from '../services/authService.js'
 
 const router = useRouter()
 const toast = useToast()
@@ -420,36 +421,43 @@ const handleCadastro = async () => {
     return
   }
   
-  const cpfNumbers = cpf.value.replace(/\D/g, '')
-  if (cpfNumbers.length !== 11) {
-    toast.error('CPF deve ter 11 dígitos')
-    return
-  }
-  
-  const phoneNumbers = phone.value.replace(/\D/g, '')
-  if (phoneNumbers.length < 10 || phoneNumbers.length > 11) {
-    toast.error('Telefone deve ter 10 ou 11 dígitos')
-    return
-  }
-  
   isLoading.value = true
   
   try {
     const userData = {
       fullName: fullName.value,
       email: email.value,
-      cpf: cpfNumbers,
-      phone: phoneNumbers,
+      cpf: cpf.value,
+      phone: phone.value,
       password: password.value
     }
     
+    // Primeiro, cria a conta
     await userService.register(userData)
     
-    toast.success('Conta criada com sucesso! Você já está logado.')
-    
-    setTimeout(() => {
-      router.push('/')
-    }, 1500)
+    // Após criar a conta, faz login automaticamente
+    try {
+      await authService.login({
+        email: email.value,
+        password: password.value
+      })
+      
+      toast.success('Conta criada com sucesso! Você já está logado.')
+      
+      // Redireciona para o dashboard
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 1500)
+      
+    } catch (loginError) {
+      console.error('Erro no login automático:', loginError)
+      toast.success('Conta criada com sucesso! Redirecionando para o login...')
+      
+      // Se o login automático falhar, redireciona para a página de login
+      setTimeout(() => {
+        router.push('/login')
+      }, 2000)
+    }
     
   } catch (error) {
     console.error('Erro ao criar conta:', error)
