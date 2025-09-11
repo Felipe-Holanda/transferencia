@@ -4,6 +4,8 @@ import Cadastro from '../views/Cadastro.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Transfer from '../views/Transfer.vue'
 import Deposit from '../views/Deposit.vue'
+import AdminDashboard from '../views/AdminDashboard.vue'
+import AccessDenied from '../views/AccessDenied.vue'
 import authService from '../services/authService.js'
 
 const routes = [
@@ -37,6 +39,18 @@ const routes = [
     component: Deposit,
     meta: { requiresAuth: true }
   },
+  {
+    path: '/admin',
+    name: 'AdminDashboard',
+    component: AdminDashboard,
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/access-denied',
+    name: 'AccessDenied',
+    component: AccessDenied,
+    meta: { requiresAuth: true }
+  }
 ]
 
 const router = createRouter({

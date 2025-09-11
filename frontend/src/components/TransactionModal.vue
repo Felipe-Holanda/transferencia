@@ -60,7 +60,7 @@
             </div>
             <div>
               <span class="block text-sm font-medium text-gray-700 mb-1">Tipo</span>
-              <p class="text-lg font-semibold text-gray-900 capitalize">{{ transaction.type.toLowerCase() }}</p>
+              <p class="text-lg font-semibold text-gray-900">{{ transactionService.formatTransactionType(transaction.type) }}</p>
             </div>
           </div>
 
@@ -95,8 +95,11 @@
           <div class="border-t pt-4 bg-blue-50 rounded-lg p-4">
             <div class="flex justify-between items-center">
               <span class="text-sm font-medium text-gray-700">Status</span>
-              <span class="text-lg font-bold text-blue-600">
-                {{ getTransactionStatusText(transaction) }}
+              <span :class="[
+                'inline-flex px-2 py-1 text-sm font-semibold rounded-full',
+                transactionService.getTransactionStatusColor(transaction.status)
+              ]">
+                {{ transactionService.formatTransactionStatus(transaction.status) }}
               </span>
             </div>
           </div>
@@ -160,17 +163,6 @@ export default {
       return transactionService.getTransactionPrefix(direction)
     }
 
-    // Retorna o texto do status da transação
-    const getTransactionStatusText = (transaction) => {
-      if (transaction.description.includes('Agendada')) {
-        return 'Agendada'
-      }
-      if (transaction.type === 'DEPOSIT') {
-        return 'Concluído'
-      }
-      return 'Processando'
-    }
-
     return {
       // Estado
       loading,
@@ -181,7 +173,9 @@ export default {
       formatCurrency,
       formatDate,
       getTransactionPrefix,
-      getTransactionStatusText
+      
+      // Services
+      transactionService
     }
   }
 }

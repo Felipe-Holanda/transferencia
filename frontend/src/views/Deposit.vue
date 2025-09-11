@@ -22,7 +22,7 @@
     <!-- Progress Indicator -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-center">
           <div class="flex items-center space-x-8">
             <!-- Step 1 -->
             <div class="flex items-center">

@@ -147,11 +147,104 @@
           <div class="px-4 py-5 sm:p-6">
             <div class="flex justify-between items-center mb-4">
               <h3 class="text-lg font-medium text-gray-900">Histórico de Transações</h3>
-              <span class="text-sm text-gray-500">{{ transactions.length }} transações</span>
+              <div class="flex items-center space-x-4">
+                <!-- Filter by Type -->
+                <div class="flex items-center space-x-2">
+                  <span class="text-sm font-medium text-gray-700">Tipo:</span>
+                  <div class="flex rounded-lg border border-gray-200 bg-gray-50 p-1 filter-group">
+                    <button
+                      @click="transactionTypeFilter = 'all'"
+                      :class="[
+                        'px-3 py-1 text-xs font-medium rounded-md filter-button',
+                        transactionTypeFilter === 'all'
+                          ? 'bg-white text-blue-600 shadow-sm active'
+                          : 'text-gray-600 hover:text-gray-900'
+                      ]"
+                    >
+                      Todos
+                    </button>
+                    <button
+                      @click="transactionTypeFilter = 'DEPOSIT'"
+                      :class="[
+                        'px-3 py-1 text-xs font-medium rounded-md filter-button',
+                        transactionTypeFilter === 'DEPOSIT'
+                          ? 'bg-white text-green-600 shadow-sm active'
+                          : 'text-gray-600 hover:text-gray-900'
+                      ]"
+                    >
+                      Depósitos
+                    </button>
+                    <button
+                      @click="transactionTypeFilter = 'TRANSFER'"
+                      :class="[
+                        'px-3 py-1 text-xs font-medium rounded-md filter-button',
+                        transactionTypeFilter === 'TRANSFER'
+                          ? 'bg-white text-blue-600 shadow-sm active'
+                          : 'text-gray-600 hover:text-gray-900'
+                      ]"
+                    >
+                      Transferências
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Filter by Status -->
+                <div class="flex items-center space-x-2">
+                  <span class="text-sm font-medium text-gray-700">Status:</span>
+                  <div class="flex rounded-lg border border-gray-200 bg-gray-50 p-1 filter-group">
+                    <button
+                      @click="transactionStatusFilter = 'all'"
+                      :class="[
+                        'px-3 py-1 text-xs font-medium rounded-md filter-button',
+                        transactionStatusFilter === 'all'
+                          ? 'bg-white text-blue-600 shadow-sm active'
+                          : 'text-gray-600 hover:text-gray-900'
+                      ]"
+                    >
+                      Todos
+                    </button>
+                    <button
+                      @click="transactionStatusFilter = 'PENDING'"
+                      :class="[
+                        'px-3 py-1 text-xs font-medium rounded-md filter-button',
+                        transactionStatusFilter === 'PENDING'
+                          ? 'bg-white text-yellow-600 shadow-sm active'
+                          : 'text-gray-600 hover:text-gray-900'
+                      ]"
+                    >
+                      Pendente
+                    </button>
+                    <button
+                      @click="transactionStatusFilter = 'COMPLETED'"
+                      :class="[
+                        'px-3 py-1 text-xs font-medium rounded-md filter-button',
+                        transactionStatusFilter === 'COMPLETED'
+                          ? 'bg-white text-green-600 shadow-sm active'
+                          : 'text-gray-600 hover:text-gray-900'
+                      ]"
+                    >
+                      Concluído
+                    </button>
+                    <button
+                      @click="transactionStatusFilter = 'CANCELLED'"
+                      :class="[
+                        'px-3 py-1 text-xs font-medium rounded-md filter-button',
+                        transactionStatusFilter === 'CANCELLED'
+                          ? 'bg-white text-red-600 shadow-sm active'
+                          : 'text-gray-600 hover:text-gray-900'
+                      ]"
+                    >
+                      Cancelado
+                    </button>
+                  </div>
+                </div>
+                
+                <span class="text-sm text-gray-500">{{ filteredTransactions.length }} transações</span>
+              </div>
             </div>
 
             <!-- Empty State -->
-            <div v-if="transactions.length === 0" class="text-center py-12">
+            <div v-if="filteredTransactions.length === 0" class="text-center py-12">
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
               </svg>
@@ -162,7 +255,7 @@
             <!-- Transactions List -->
             <div v-else class="space-y-4">
               <div
-                v-for="transaction in transactions"
+                v-for="transaction in filteredTransactions"
                 :key="transaction.transactionId"
                 class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer hover:border-blue-300"
                 @click="openTransactionModal(transaction)"
@@ -182,18 +275,10 @@
                         viewBox="0 0 24 24"
                       >
                         <path 
-                          v-if="transaction.type === 'DEPOSIT'" 
                           stroke-linecap="round" 
                           stroke-linejoin="round" 
                           stroke-width="2" 
-                          d="M7 16l-4-4m0 0l4-4m-4 4h18"
-                        />
-                        <path 
-                          v-else
-                          stroke-linecap="round" 
-                          stroke-linejoin="round" 
-                          stroke-width="2" 
-                          d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                          :d="transactionService.getTransactionIconPath(transaction.type)"
                         />
                       </svg>
                     </div>
@@ -204,9 +289,17 @@
                       <p class="text-sm text-gray-500">
                         {{ transaction.senderName }} • {{ formatDate(transaction.date) }}
                       </p>
-                      <p class="text-xs text-gray-400">
-                        ID: {{ transaction.transactionId.substring(0, 8) }}...
-                      </p>
+                      <div class="flex items-center space-x-2">
+                        <p class="text-xs text-gray-400">
+                          ID: {{ transaction.transactionId.substring(0, 8) }}...
+                        </p>
+                        <span :class="[
+                          'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
+                          transactionService.getTransactionStatusColor(transaction.status)
+                        ]">
+                          {{ transactionService.formatTransactionStatus(transaction.status) }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   
@@ -218,7 +311,7 @@
                     ]">
                       {{ getTransactionPrefix(transaction.direction) }}{{ formatCurrency(transaction.amount) }}
                     </p>
-                    <p class="text-sm text-gray-500 capitalize">{{ transaction.type.toLowerCase() }}</p>
+                    <p class="text-sm text-gray-500">{{ transactionService.formatTransactionType(transaction.type) }}</p>
                     <!-- Indicador de clique -->
                     <p class="text-xs text-blue-500 mt-1">Clique para detalhes</p>
                   </div>
@@ -240,7 +333,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth.js'
 import userService from '../services/userService.js'
@@ -265,6 +358,10 @@ export default {
     // Estado do modal
     const isModalOpen = ref(false)
     const selectedTransaction = ref(null)
+    
+    // Filtros
+    const transactionTypeFilter = ref('all')
+    const transactionStatusFilter = ref('all')
 
     // Carrega os dados iniciais
     const loadDashboardData = async () => {
@@ -315,6 +412,24 @@ export default {
       router.push('/')
     }
 
+    // Computed para filtrar transações
+    const filteredTransactions = computed(() => {
+      let filtered = transactions.value
+
+      // Filtro por tipo
+      if (transactionTypeFilter.value !== 'all') {
+        filtered = filtered.filter(t => t.type === transactionTypeFilter.value)
+      }
+
+      // Filtro por status
+      if (transactionStatusFilter.value !== 'all') {
+        filtered = filtered.filter(t => t.status === transactionStatusFilter.value)
+      }
+
+      // Ordena por data mais recente primeiro
+      return filtered.sort((a, b) => new Date(b.date) - new Date(a.date))
+    })
+
     // Formata valores monetários
     const formatCurrency = (value) => {
       return transactionService.formatCurrency(value)
@@ -358,6 +473,13 @@ export default {
       isModalOpen,
       selectedTransaction,
       
+      // Filtros
+      transactionTypeFilter,
+      transactionStatusFilter,
+      
+      // Computed
+      filteredTransactions,
+      
       // Métodos
       refreshData,
       goToAdminDashboard,
@@ -368,7 +490,10 @@ export default {
       formatDate,
       getTransactionPrefix,
       openTransactionModal,
-      closeTransactionModal
+      closeTransactionModal,
+      
+      // Services
+      transactionService
     }
   }
 }
@@ -401,5 +526,29 @@ export default {
   transition-property: box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+}
+
+/* Animações e efeitos para os filtros */
+.filter-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.filter-button:hover {
+  transform: translateY(-1px);
+}
+
+/* Efeito de glow nos filtros ativos */
+.filter-button.active {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Animação suave para mudança de cores */
+.filter-group {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.filter-group:hover {
+  background-color: rgb(249 250 251);
 }
 </style>
